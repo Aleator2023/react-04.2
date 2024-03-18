@@ -12,14 +12,14 @@ const App = () => {
       
     if (index >= 0) { // Если тренировка с такой датой уже существует
       const updatedTrainings = trainings.map((training, i) => 
-        i === index ? { ...training, distance: newDistance } : training // Замените на newDistance
+        i === index ? { ...training, distance: training.distance + newDistance } : training 
       );
       setTrainings(updatedTrainings);
     } else { // Добавление новой тренировки
       const newTraining = { date, distance: newDistance };
       const sortedTrainings = [...trainings, newTraining].sort((a, b) => 
-        new Date(a.date.split('.').reverse().join('/')) - new Date(b.date.split('.').reverse().join('/'))
-      );
+  new Date(b.date.split('.').reverse().join('/')) - new Date(a.date.split('.').reverse().join('/'))
+);
       setTrainings(sortedTrainings);
     }
   };
