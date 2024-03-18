@@ -8,19 +8,29 @@ const App = () => {
 
   const addTraining = (date, distance) => {
     const newDistance = Number(distance);
-    const index = trainings.findIndex(t => t.date === date);
-      
-    if (index >= 0) { // Если тренировка с такой датой уже существует
-      const updatedTrainings = trainings.map((training, i) => 
-        i === index ? { ...training, distance: training.distance + newDistance } : training 
-      );
+    // Проверяем, редактируем мы запись или добавляем новую
+    if (editing.isEditing) {
+      // Редактирование существующей тренировки
+      const updatedTrainings = [...trainings];
+      updatedTrainings[editing.index] = { date, distance: newDistance }; // Заменяем дистанцию
       setTrainings(updatedTrainings);
-    } else { // Добавление новой тренировки
-      const newTraining = { date, distance: newDistance };
-      const sortedTrainings = [...trainings, newTraining].sort((a, b) => 
-  new Date(b.date.split('.').reverse().join('/')) - new Date(a.date.split('.').reverse().join('/'))
-);
-      setTrainings(sortedTrainings);
+      setEditing({ isEditing: false, index: null, date: '', distance: '' }); // Сброс состояния редактирования
+    } else {
+      // Добавление новой тренировки или суммирование дистанций
+      const index = trainings.findIndex(t => t.date === date);
+      
+      if (index >= 0) {
+        const updatedTrainings = trainings.map((training, i) => 
+          i === index ? { ...training, distance: training.distance + newDistance } : training
+        );
+        setTrainings(updatedTrainings);
+      } else {
+        const newTraining = { date, distance: newDistance };
+        const sortedTrainings = [...trainings, newTraining].sort((a, b) => 
+          new Date(b.date.split('.').reverse().join('/')) - new Date(a.date.split('.').reverse().join('/'))
+        );
+        setTrainings(sortedTrainings);
+      }
     }
   };
   
@@ -49,3 +59,4 @@ const App = () => {
 };
 
 export default App;
+
